@@ -26,8 +26,11 @@ Route::get('/dashboard', function () {
     ]);
 })->name('dashboard');
 
+Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('groups', GroupController::class)->except(['create']);
+    Route::resource('groups', GroupController::class)->except(['create', 'index', 'show']);
     Route::post('/groups/{group}/add-user', [GroupController::class, 'addUser'])->name('groups.add-user');
 
     Route::post('/groups/{group}/bills', [BillController::class, 'store'])->name('bills.store');

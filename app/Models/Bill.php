@@ -9,14 +9,23 @@ class Bill extends Model
 {
     use HasFactory;
 
-    // TO JEST KLUCZOWA LISTA:
     protected $fillable = [
         'group_id',
         'payer_id',
-        'description', // Tego brakowało!
+        'description',
         'amount',
         'date'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'group_id' => 'integer',
+            'payer_id' => 'integer',
+            'amount' => 'decimal:2',
+            'date' => 'date',
+        ];
+    }
 
     public function group()
     {

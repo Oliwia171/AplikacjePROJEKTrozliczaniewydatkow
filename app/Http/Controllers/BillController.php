@@ -2,34 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBillRequest;
 use App\Models\Bill;
 use App\Models\Group;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class BillController extends Controller
 {
-    public function store(Request $request, Group $group)
+    public function store(StoreBillRequest $request, Group $group)
     {
         $this->authorizeGroupAccess($group);
 
-        $validated = $request->validate([
-            'description' => ['required', 'string', 'max:255'],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'payer_id' => [
-                'required',
-                Rule::exists('group_user', 'user_id')->where('group_id', $group->id),
-            ],
-        ], [
-            'description.required' => 'Podaj nazwe wydatku. Bez nazwy wydatek nie zostanie zapisany.',
-            'amount.required' => 'Podaj kwote wydatku.',
-            'amount.numeric' => 'Kwota musi byc liczba.',
-            'amount.min' => 'Kwota musi byc dodatnia. Nie mozna wpisac kwoty ujemnej ani zera.',
-            'payer_id.required' => 'Wybierz platnika.',
-            'payer_id.exists' => 'Platnik musi byc czlonkiem tej grupy.',
-        ]);
+        $validated = $request->validated();
 
         $bill = $group->bills()->create([
             'description' => $validated['description'],
@@ -83,7 +68,10 @@ class BillController extends Controller
     private function authorizeGroupAccess(Group $group): void
     {
         if (!auth()->user()->isAdmin() && !$group->users->contains(Auth::id())) {
-            abort(403, 'Brak dostepu.');
+            redirect()
+                ->route('groups.index')
+                ->with('error', 'Nie masz dostepu do wydatkow tej grupy.')
+                ->throwResponse();
         }
     }
 }

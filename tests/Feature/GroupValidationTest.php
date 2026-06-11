@@ -11,7 +11,7 @@ class GroupValidationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_group_name_must_be_unique(): void
+    public function test_group_name_must_be_unique_for_same_owner(): void
     {
         $user = User::factory()->create();
 
@@ -27,6 +27,32 @@ class GroupValidationTest extends TestCase
                 'description' => 'Duplikat',
             ])
             ->assertSessionHasErrors('name');
+    }
+
+    public function test_different_users_can_use_same_group_name(): void
+    {
+        $firstUser = User::factory()->create();
+        $secondUser = User::factory()->create();
+
+        Group::create([
+            'name' => 'Wakacje',
+            'description' => 'Pierwsza grupa',
+            'owner_id' => $firstUser->id,
+        ]);
+
+        $this->actingAs($secondUser)
+            ->post(route('groups.store'), [
+                'name' => 'Wakacje',
+                'description' => 'Druga grupa',
+            ])
+            ->assertRedirect(route('groups.index'))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('groups', [
+            'name' => 'Wakacje',
+            'description' => 'Druga grupa',
+            'owner_id' => $secondUser->id,
+        ]);
     }
 
     public function test_group_description_is_saved(): void

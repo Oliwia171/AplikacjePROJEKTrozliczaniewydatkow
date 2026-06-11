@@ -12,6 +12,14 @@ class Group extends Model
 
     protected $fillable = ['name', 'description', 'owner_id', 'total_amount'];
 
+    protected function casts(): array
+    {
+        return [
+            'owner_id' => 'integer',
+            'total_amount' => 'decimal:2',
+        ];
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class);

@@ -11,7 +11,9 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check() || !auth()->user()->isAdmin()) {
-            abort(403, 'Dostep tylko dla administratora.');
+            return redirect()
+                ->route('dashboard')
+                ->with('error', 'Dostep tylko dla administratora. Zaloguj sie na konto admina.');
         }
 
         return $next($request);

@@ -11,11 +11,11 @@
                         {{ __('Start') }}
                     </x-nav-link>
 
-                    @auth
-                        <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
-                            {{ __('Moje grupy') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
+                        {{ auth()->check() ? __('Moje grupy') : __('Grupy') }}
+                    </x-nav-link>
 
+                    @auth
                         @if(Auth::user()->isAdmin())
                             <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.*')">
                                 {{ __('Panel admina') }}
@@ -76,11 +76,11 @@
                 {{ __('Start') }}
             </x-responsive-nav-link>
 
-            @auth
-                <x-responsive-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
-                    {{ __('Moje grupy') }}
-                </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
+                {{ auth()->check() ? __('Moje grupy') : __('Grupy') }}
+            </x-responsive-nav-link>
 
+            @auth
                 @if(Auth::user()->isAdmin())
                     <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.*')">
                         {{ __('Panel admina') }}
