@@ -652,4 +652,3 @@ Potencjal optymalizacji:
 - przeniesienie produkcyjnej bazy z SQLite na MySQL 8.0 albo PostgreSQL,
 - kolejki do wysylki powiadomien,
 - testy funkcjonalne dla krytycznych flow: dodanie rachunku, saldo, panel admina.
-
