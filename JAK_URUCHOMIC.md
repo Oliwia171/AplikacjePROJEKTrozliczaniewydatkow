@@ -1,90 +1,100 @@
-# Jak odpalic projekt
+# Jak uruchomic projekt
 
-## Gdzie jest baza danych?
+Pelna dokumentacja projektu, podrecznik uzytkownika, role, uprawnienia, CRUD i plany rozbudowy znajduja sie w pliku:
 
-Domyslnie projekt uzywa **SQLite** — plik bazy:
-
+```text
+README.md
 ```
+
+## Szybkie uruchomienie lokalne
+
+Wymagania:
+
+- PHP 8.2.0+,
+- Composer 2.x,
+- Node.js 22.x,
+- npm 10.x,
+- SQLite 3.x albo MySQL 8.0.x.
+
+Domyslnie projekt uzywa SQLite w pliku:
+
+```text
 database/database.sqlite
 ```
 
-Laravel tworzy go automatycznie przy migracjach.
+Pierwsze uruchomienie:
 
-**Wazne:** triggery z wymagan na 5.0 dzialaja tylko na **MySQL**. Na SQLite aplikacja chodzi normalnie, salda liczy PHP.
-
----
-
-## Wymagania
-
-- PHP 8.2+
-- Composer
-- Node.js + npm
-
----
-
-## Pierwsze uruchomienie
-
-```powershell
-cd "sciezka\do\ProjektAplikacje"
-
+```bash
 composer install
 npm install
-
-
-copy .env.example .env
+cp .env.example .env
 php artisan key:generate
-
-New-Item database\database.sqlite -ItemType File -Force
+mkdir -p database
+touch database/database.sqlite
 php artisan migrate:fresh --seed
-
 npm run build
 php artisan serve
 ```
 
-Aplikacja: **http://127.0.0.1:8000**
-
----
-
-## Kolejne uruchomienia
+Windows PowerShell:
 
 ```powershell
+composer install
+npm install
+copy .env.example .env
+php artisan key:generate
+New-Item database\database.sqlite -ItemType File -Force
+php artisan migrate:fresh --seed
+npm run build
 php artisan serve
 ```
 
-CSS/JS w drugim terminalu:
+Aplikacja bedzie dostepna pod adresem:
 
-```powershell
+```text
+http://127.0.0.1:8000
+```
+
+## Tryb developerski
+
+Terminal 1:
+
+```bash
+php artisan serve
+```
+
+Terminal 2:
+
+```bash
 npm run dev
 ```
 
----
+Alternatywnie:
 
-## Konta testowe (po seedzie)
+```bash
+composer run dev
+```
 
-| Rola  | Email                | Haslo    |
-|-------|----------------------|----------|
-| admin | oliwia@example.com | password |
-| user  | adam@example.com      | password |
-| user  | ewa@example.com       | password |
+## Konta testowe po seedzie
 
----
+| Rola | Email | Haslo |
+| --- | --- | --- |
+| admin | `oliwia@example.com` | `password` |
+| user | `adam@example.com` | `password` |
+| user | `ewa@example.com` | `password` |
+| user testowy spoza grupy | `hacker@example.com` | `password` |
 
-## Szybki test (5 min)
+## Szybki test
 
-1. Zaloguj: **oliwia@example.com** / `password`
-2. **Moje Grupy** → **Wycieczka w gory 2026**
-3. Sprawdz panel rozliczen i historie rachunkow
-4. Dodaj wydatek, pozycje z paragonu
-5. Wejdz w **Admin** (tylko admin)
+1. Zaloguj sie jako `oliwia@example.com` / `password`.
+2. Wejdz w `Moje grupy`.
+3. Otworz grupe `Wycieczka w gory 2026`.
+4. Sprawdz panel rozliczen, historie rachunkow i podzial kosztow.
+5. Dodaj nowy wydatek oraz pozycje z paragonu.
+6. Wejdz w `Panel admina`, aby sprawdzic zarzadzanie uzytkownikami i rolami.
 
----
+## Uwaga o bazie danych
 
-## Problemy
+Na SQLite aplikacja dziala normalnie, a suma grupy i salda sa liczone w PHP.
 
-- **`php` nie dziala** — zamknij terminal i otworz nowy
-- **Brak styli** — `npm run build`
-- **Blad bazy** — sprawdz `database/database.sqlite`
-
----
-
-Dokumentacja (PDF, ERD, SQL): `../Dokumentacja/`
+Triggery i funkcja skladowana z wymagan na wyzsza ocene dzialaja po przelaczeniu projektu na MySQL 8.0.x.
